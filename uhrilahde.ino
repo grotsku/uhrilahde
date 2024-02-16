@@ -48,14 +48,14 @@ void loop() {
 
     delay(timingDuration / 3);
     for (int i = 0; i <= timingDuration; i += 1000) {
-      shortSentence();
+      sayWord();
     }
   }
 
   delay(100);
 }
 
-void shortSentence() {
+void sayWord() {
   if (angle <= 90) {
     angle += random(5, 90);
     } else {
@@ -69,7 +69,7 @@ void shortSentence() {
   Serial.println(angle);
   myServo.write(angle);
 
-  delay(random(300, 1000));
+  delay(random(100, 1000));
   }
 
 void ultraSonic() {
