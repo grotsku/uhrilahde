@@ -1,9 +1,10 @@
 // pins
-const int controlPin1 = 2;
-const int controlPin2 = 3;
-const int enablePin = 9;
+const int controlPin1 = 3;
+const int controlPin2 = 5;
+const int enablePin = 2;
 const int trig = 4;
 const int echo = 7;
+const int btnPin = 12;
 // ultra
 int duration;
 float distance;
@@ -11,7 +12,7 @@ float meter;
 // motor
 int motorEnabled = 0;
 int motorSpeed = 0;
-int motorDirection = 1;
+int btnState = 0;
 
 void setup() {
   // put your setup code here, to run once:
@@ -28,12 +29,16 @@ void setup() {
   pinMode(echo, INPUT);
   delay(6000);
   Serial.println("Distance:");
+  // button
+  pinMode(btnPin, INPUT);
+  digitalWrite(btnPin, HIGH);
 }
 
 void loop() {
   ultraSonic();
 
-  motorProgram();
+  test();
+  // motorProgram();
 
   delay(100);
 }
@@ -66,5 +71,18 @@ void ultraSonic() {
     Serial.print("\t");
     Serial.print(meter);
     Serial.println("m");
+  }
+}
+
+void test() {
+  btnState = digitalRead(btnPin);
+
+  if (btnState == LOW) {
+    digitalWrite(enablePin, HIGH);
+    analogWrite(controlPin1, 100);
+    Serial.println("motor on");
+  } else {
+    digitalWrite(enablePin, LOW);
+    Serial.println("motor off");
   }
 }
