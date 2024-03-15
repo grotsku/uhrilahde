@@ -40,7 +40,7 @@ void loop() {
   test();
   // motorProgram();
 
-  delay(100);
+  delay(50);
 }
 
 void motorProgram() {
