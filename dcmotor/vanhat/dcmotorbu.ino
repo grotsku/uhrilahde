@@ -50,9 +50,9 @@ void setup() {
 void loop() {
   ultraSonic();
   // distanceChange();
-  getMotorSpeed();
+  getMotorSpeed(distance);
 
-  if (distance > 35) {
+    if (distance > 35)
     if (distance >= 400) {
       interval = random(20000, 60000);
       //motorSpeed = random(10, 80);
@@ -95,25 +95,18 @@ void motorProgram(int interval, int motorSpeed, int motorOnTime) {
     Serial.println("motor on");
     digitalWrite(enablePin, HIGH);
     analogWrite(controlPin1, motorSpeed);
-    previousMillis = currentMillis;
-    // set flag to indicate motor is running
-    motorState = HIGH;
-  }
+    delay(motorOnTime);
+    digitalWrite(enablePin, LOW);
+    Serial.println("motor off");
 
-  //check to see if motor has been running for motorOnTime
-  if (motorState == HIGH && currentMillis - previousMillis >= motorOnTime) {
-      // turn off the motor
-      digitalWrite(enablePin, LOW);
-      // reset motor state flag
-      motorState = LOW;
-      Serial.println("motor off");
-    }
+    previousMillis = currentMillis;
+  }
 }
 
-void getMotorSpeed() {
+void getMotorSpeed(float distance) {
   int motorSpeedNoise = random(-5, 5);
   motorSpeed = 254 - map(distance, 1, 400, 0, 254) + motorSpeedNoise;
-  Serial.print("mapped motor speed: ");
+  Serial.print("mapped motor speed: ")
   Serial.println(motorSpeed);
 }
 
