@@ -14,14 +14,15 @@ int motorState = LOW;
 int motorSpeed = 0;
 int btnState = 0;
 int motorOnTime = 0;
+int chosenMotorPin = 0;
 // timing
 unsigned long previousMillis = 0;
 int interval = 0;
+unsigned long previousDirectionMillis = 0;
 
 // Define thresholds for rapid distance changes
 const float rapidIncreaseThreshold = 50.0; // Adjust as needed
 const float rapidDecreaseThreshold = -50.0; // Adjust as needed
-
 // Variables to track previous distance
 float previousDistance = 0.0;
 
@@ -51,32 +52,32 @@ void loop() {
   ultraSonic();
   // distanceChange();
   getMotorSpeed();
+  getMotorDirection();
 
   if (distance > 35) {
     if (distance >= 400) {
       interval = random(20000, 60000);
-      //motorSpeed = random(10, 80);
-      motorOnTime = random(500, 1000);
+      motorOnTime = random(1000, 2000);
     } else if (distance < 400 && distance >= 325) {
       interval = random(1000, 10000);
-      //motorSpeed = random(80, 140);
       motorOnTime = random(400, 1500);
     } else if (distance < 325 && distance >= 250) {
       interval = random(800, 4000);
-      //motorSpeed = random(100, 180);
       motorOnTime = random(400, 1800);
     } else if (distance < 250 && distance >= 150) {
       interval = random(500, 2500);
-      //motorSpeed = random(150, 190);
       motorOnTime = random(400, 2500);
-    } else if (distance < 150 && distance >= 50) {
-      interval = random(500, 1000);
-      //motorSpeed = random(180, 220);
-      motorOnTime = random(1000, 5000);
+    } else if (distance < 150 && distance >= 100) {
+      interval = random(400, 2000);
+      motorOnTime = random(300, 2600);
+    } else if (distance < 100 && distance >= 30) {
+      interval = random(300, 1000);
+      motorOnTime = random(1000, 3000);
     }
     motorProgram(interval, motorSpeed, motorOnTime);
   } else {
     digitalWrite(enablePin, HIGH);
+    digitalWrite(controlPin2, LOW);
     analogWrite(controlPin1, random(220, 255));
     Serial.println("too close!!!");
   }
@@ -94,7 +95,7 @@ void motorProgram(int interval, int motorSpeed, int motorOnTime) {
     // save the last time the motor ran
     Serial.println("motor on");
     digitalWrite(enablePin, HIGH);
-    analogWrite(controlPin1, motorSpeed);
+    analogWrite(chosenMotorPin, motorSpeed);
     previousMillis = currentMillis;
     // set flag to indicate motor is running
     motorState = HIGH;
@@ -111,10 +112,20 @@ void motorProgram(int interval, int motorSpeed, int motorOnTime) {
 }
 
 void getMotorSpeed() {
-  int motorSpeedNoise = random(-5, 5);
-  motorSpeed = 254 - map(distance, 1, 400, 0, 254) + motorSpeedNoise;
-  Serial.print("mapped motor speed: ");
-  Serial.println(motorSpeed);
+  int motorSpeedNoise = random(-5, 15);
+  motorSpeed = 254 - map(distance, 1, 417, 10, 254) + motorSpeedNoise;
+  if (motorSpeed <= 10) { motorSpeed = 10; }
+  // Serial.print("mapped motor speed: ");
+  // Serial.println(motorSpeed);
+}
+
+void getMotorDirection() {
+    if (millis() - previousDirectionMillis >= 5000) {
+        chosenMotorPin = (chosenMotorPin == controlPin1) ? controlPin2 : controlPin1;
+        digitalWrite(controlPin1, chosenMotorPin == controlPin1 ? HIGH : LOW);
+        digitalWrite(controlPin2, chosenMotorPin == controlPin2 ? HIGH : LOW);
+        previousDirectionMillis = millis();
+    }
 }
 
 void ultraSonic() {
