@@ -4,7 +4,6 @@ const int controlPin2 = 5;
 const int enablePin = 2;
 const int trig = 4;
 const int echo = 7;
-const int btnPin = 12;
 // ultra
 int duration;
 float distance;
@@ -12,7 +11,6 @@ float meter;
 // motor
 int motorState = LOW;
 int motorSpeed = 0;
-int btnState = 0;
 int motorOnTime = 0;
 int chosenMotorPin = 0;
 // timing
@@ -41,9 +39,6 @@ void setup() {
   pinMode(echo, INPUT);
   delay(6000);
   Serial.println("Distance:");
-  // button
-  pinMode(btnPin, INPUT);
-  digitalWrite(btnPin, HIGH);
 
   Serial.println("---start program---");
 }
