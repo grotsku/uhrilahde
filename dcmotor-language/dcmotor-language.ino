@@ -55,7 +55,9 @@ void loop() {
         interval = random(100, 1500);
         motorOnTime = random(100, 300);
         sayWord(interval, motorSpeed, motorOnTime);   
+        waitBetweenWords(interval);
       }
+      delay(2000);
 // distance between 325 & 250 cm
     } else if (distance < 325 && distance >= 250) {
       sentenceDuration = random(500, 1750);
@@ -63,7 +65,9 @@ void loop() {
         interval = random(100, 1200);
         motorOnTime = random(100, 500);
         sayWord(interval, motorSpeed, motorOnTime);   
+        waitBetweenWords(interval);
       }
+      delay(2000);
 // distance between 250 & 150 cm
    } else if (distance < 250 && distance >= 150) {
       sentenceDuration = random(500, 2000);
@@ -71,7 +75,9 @@ void loop() {
         interval = random(100, 1000);
         motorOnTime = random(100, 1000);
         sayWord(interval, motorSpeed, motorOnTime);   
+        waitBetweenWords(interval);
       }
+      delay(2000);
 // distance between 150 & 100 cm
    } else if (distance < 150 && distance >= 100) {
       sentenceDuration = random(500, 2000);
@@ -79,7 +85,9 @@ void loop() {
         interval = random(100, 1250);
         motorOnTime = random(200, 1000);
         sayWord(interval, motorSpeed, motorOnTime);   
+        waitBetweenWords(interval);
       }
+      delay(2000);
 // distance between 100 & 30 cm
    } else if (distance < 100 && distance >= 30) {
       sentenceDuration = random(1000, 3000);
@@ -87,7 +95,9 @@ void loop() {
         interval = random(100, 1000);
         motorOnTime = random(100, 1500);
         sayWord(interval, motorSpeed, motorOnTime);   
+        waitBetweenWords(interval);
       }
+      delay(2000);
     }
 // distance under 30 cm
   } else {
@@ -107,33 +117,22 @@ void sayWord(int interval, int motorSpeed, int motorOnTime) {
     chosenMotorPin = controlPin1;
     digitalWrite(controlPin1, HIGH);
     digitalWrite(controlPin2, LOW);
-    Serial.print("motor spinning clockwise: ")
-    Serial.println(motorSpeed)
+    Serial.print("MOTOR ON! motor spinning clockwise: ");
+    Serial.println(motorSpeed);
   } else {
     chosenMotorPin = controlPin2;
     digitalWrite(controlPin1, LOW);
     digitalWrite(controlPin2, HIGH);
-    Serial.print("motor spinning counter clockwise: ")
-    Serial.println(motorSpeed)
+    Serial.print("MOTOR ON! motor spinning counter clockwise: ");
+    Serial.println(motorSpeed);
   }
 
-  unsigned long currentMillis = millis();
-  if (currentMillis - previousMillis >= interval) {
-    digitalWrite(enablePin, HIGH);
-    analogWrite(chosenMotorPin, motorSpeed);
-    // save the last time the motor ran
-    previousMillis = currentMillis;
-    // set flag to indicate the motor is running
-    motorState = HIGH;
-  }
+  digitalWrite(enablePin, HIGH);
+  analogWrite(chosenMotorPin, motorSpeed);
+  delay(random(100, 1000));
+  digitalWrite(enablePin, LOW);
+  Serial.println("MOTOR OFF!");
 
-  // check to see if motor has been running for motorOnTime
-  if (motorState == HIGH && currentMillis - previousMillis >= motorOnTime) {
-    // turn motor off
-    digitalWrite(enablePin, LOW);
-    // reset motor state flag
-    motorState = LOW;
-  }
 }
 
 void getMotorSpeed() {
@@ -151,6 +150,14 @@ void getMotorDirection() {
         digitalWrite(controlPin2, chosenMotorPin == controlPin2 ? HIGH : LOW);
         previousDirectionMillis = millis();
     }
+}
+
+void waitBetweenWords(unsigned long interval) {
+  unsigned long currentMillis = millis();
+  if (currentMillis - previousMillis >= interval) {
+    Serial.println("waiting");
+    previousMillis = currentMillis;
+  }
 }
 
 void ultraSonic() {
