@@ -40,7 +40,7 @@ void setup() {
 
 void loop() {
   ultraSonic();
-  getMotorDirection();
+  // getMotorDirection();
   getMotorSpeed();
 
   if (distance > 35) {
@@ -48,42 +48,48 @@ void loop() {
       interval = random(20000, 60000);
       motorOnTime = random(1000, 2000);
       sayWord(interval, motorSpeed, motorOnTime);
+// distance between 400 & 325 cm
     } else if (distance < 400 && distance >= 325) {
-      sentenceDuration = random(1000, 3000);
-      for (int i = 0; i <= sentenceDuration; i += 1000) {
-        interval = random(100, 1000);
-        motorOnTime = random(100, 1000);
+      sentenceDuration = random(500, 1500);
+      for (int i = 0; i <= sentenceDuration; i += 500) {
+        interval = random(100, 1500);
+        motorOnTime = random(100, 300);
         sayWord(interval, motorSpeed, motorOnTime);   
       }
+// distance between 325 & 250 cm
     } else if (distance < 325 && distance >= 250) {
-      sentenceDuration = random(1000, 3000);
-      for (int i = 0; i <= sentenceDuration; i += 1000) {
+      sentenceDuration = random(500, 1750);
+      for (int i = 0; i <= sentenceDuration; i += 500) {
+        interval = random(100, 1200);
+        motorOnTime = random(100, 500);
+        sayWord(interval, motorSpeed, motorOnTime);   
+      }
+// distance between 250 & 150 cm
+   } else if (distance < 250 && distance >= 150) {
+      sentenceDuration = random(500, 2000);
+      for (int i = 0; i <= sentenceDuration; i += 500) {
         interval = random(100, 1000);
         motorOnTime = random(100, 1000);
         sayWord(interval, motorSpeed, motorOnTime);   
       }
-    } else if (distance < 250 && distance >= 150) {
-      sentenceDuration = random(1000, 3000);
-      for (int i = 0; i <= sentenceDuration; i += 1000) {
-        interval = random(100, 1000);
-        motorOnTime = random(100, 1000);
+// distance between 150 & 100 cm
+   } else if (distance < 150 && distance >= 100) {
+      sentenceDuration = random(500, 2000);
+      for (int i = 0; i <= sentenceDuration; i += 500) {
+        interval = random(100, 1250);
+        motorOnTime = random(200, 1000);
         sayWord(interval, motorSpeed, motorOnTime);   
       }
-    } else if (distance < 150 && distance >= 100) {
+// distance between 100 & 30 cm
+   } else if (distance < 100 && distance >= 30) {
       sentenceDuration = random(1000, 3000);
-      for (int i = 0; i <= sentenceDuration; i += 1000) {
+      for (int i = 0; i <= sentenceDuration; i += 500) {
         interval = random(100, 1000);
-        motorOnTime = random(100, 1000);
-        sayWord(interval, motorSpeed, motorOnTime);   
-      }
-    } else if (distance < 100 && distance >= 30) {
-      sentenceDuration = random(1000, 3000);
-      for (int i = 0; i <= sentenceDuration; i += 1000) {
-        interval = random(100, 1000);
-        motorOnTime = random(100, 1000);
+        motorOnTime = random(100, 1500);
         sayWord(interval, motorSpeed, motorOnTime);   
       }
     }
+// distance under 30 cm
   } else {
     digitalWrite(enablePin, HIGH);
     digitalWrite(controlPin2, LOW);
@@ -94,11 +100,23 @@ void loop() {
   delay(50);
 }
 
-void saySentence(int sentenceDuration) {
-
-}
-
 void sayWord(int interval, int motorSpeed, int motorOnTime) {
+  // get motor direction
+  int motorRandom = random(1, 10);
+  if (motorRandom <= 5) {
+    chosenMotorPin = controlPin1;
+    digitalWrite(controlPin1, HIGH);
+    digitalWrite(controlPin2, LOW);
+    Serial.print("motor spinning clockwise: ")
+    Serial.println(motorSpeed)
+  } else {
+    chosenMotorPin = controlPin2;
+    digitalWrite(controlPin1, LOW);
+    digitalWrite(controlPin2, HIGH);
+    Serial.print("motor spinning counter clockwise: ")
+    Serial.println(motorSpeed)
+  }
+
   unsigned long currentMillis = millis();
   if (currentMillis - previousMillis >= interval) {
     digitalWrite(enablePin, HIGH);
